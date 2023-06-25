@@ -1,10 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getInitialpostState,
-  getPostClickId,
-  selectPostsState,
-  updatePost,
-} from "../../features/postsSlice";
+import { getPostClickId, selectPostsState } from "../../features/postsSlice";
 import { NavLink } from "react-router-dom";
 import WritePost from "./Writepost";
 
@@ -24,12 +19,7 @@ const Posts = () => {
         return (
           <div key={post.id}>
             <NavLink to="/post">
-              <h4
-                onClick={() => {
-                  dispatch(getPostClickId(post.id));
-                  return dispatch(getInitialpostState(post));
-                }}
-              >
+              <h4 onClick={() => dispatch(getPostClickId(post.id))}>
                 {post.title}
               </h4>
             </NavLink>

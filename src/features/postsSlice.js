@@ -1,12 +1,48 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const postsAPI = createAsyncThunk("posts", async () => {
-  const response = await axios
-    .get("https://jsonplaceholder.typicode.com/posts?_limit=10")
-    .then((resp) => resp.data);
-  return response;
-});
+export const postsAPI = createAsyncThunk(
+  "posts",
+  async (post, { dispatch }) => {
+    const response = await axios
+      .get("https://jsonplaceholder.typicode.com/posts?_limit=10")
+      .then((resp) => resp.data);
+    dispatch(getPostState());
+    return response;
+  }
+);
+export const postAdd = createAsyncThunk(
+  "post/add",
+  async (post, { dispatch }) => {
+    const response = await axios.post(
+      `https://jsonplaceholder.typicode.com/posts`,
+      { post }
+    );
+    dispatch(addPost(post));
+    return response;
+  }
+);
+export const postDelete = createAsyncThunk(
+  "posts/deletePost",
+  async (id, { dispatch }) => {
+    const response = await axios.delete(
+      `https://jsonplaceholder.typicode.com/posts/${id}`
+    );
+    dispatch(deletePost(id));
+    return response;
+  }
+);
+export const postUpdate = createAsyncThunk(
+  "post/update",
+  async (post, { dispatch }) => {
+    const newPost = { userId: 1, title: post.title, body: post.body };
+    const response = await axios
+      .patch(`https://jsonplaceholder.typicode.com/posts`, { newPost })
+      .then((resp) => console.log(resp));
+    dispatch(updatePost(newPost));
+    return response;
+  }
+);
 
 const initialState = {
   showNewBlockPostState: false,
@@ -31,39 +67,11 @@ const postsSlice = createSlice({
       state.initialPost = action.payload;
     },
     updatePost: (state, action) => {
-      console.log(current(state.postsState));
-      const title = action.payload.title;
-      const body = action.payload.body;
-      let index = state.postsState.indexOf(state.postId);
-      state.postsState = state.postsState.map(
-        (post, indx) =>
-          post[indx] === index &&
-          (post[indx] = { id: post.id, userId: post.userId, title, body })
+      const index = state.postsState.indexOf(state.postId);
+
+      state.postsState = state.postsState.map((post, i) =>
+        post[i] === index ? (post[i] = action.payload) : post
       );
-      // const title = action.payload.title;
-      // const body = action.payload.body;
-      // const postClone = [... state.initialPost];
-      // const index = postClone.indexOf(state.postId);
-      // postClone[index] = { id: Math.random(), title, body };
-      // axios.put(
-      //   "https://jsonplaceholder.typicode.com/posts" + "/" + state.initialPost
-      // );
-      // state.postsState = postClone;
-      /////////////////
-      // state.postsState = state.postsState.map((post) => {
-      //   console.log(post);
-      //   return post.id === state.postId
-      //     ? { title, id: post.id, body, userId: post.userId }
-      //     : { post };
-      // });
-      //////////////////
-      // p.id === state.postId && {
-      //   title: action.payload.title,
-      //   body: action.payload.body,
-      //   id: p.id,
-      // }
-      console.log(current(state.postsState));
-      // console.log(state.postsState);
     },
     deletePost: (state) => {
       state.postsState = state.postsState.filter((p) => p.id !== state.postId);

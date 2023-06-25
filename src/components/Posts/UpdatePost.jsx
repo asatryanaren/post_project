@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getPostState,
+  postUpdate,
   selectPostsId,
   selectPostsState,
-  updatePost,
 } from "../../features/postsSlice";
 import { NavLink } from "react-router-dom";
 
@@ -13,16 +12,11 @@ const UpdatePostForm = () => {
   const [body, setBody] = useState("");
   const id = useSelector(selectPostsId);
   const posts = useSelector(selectPostsState);
-  const post = posts.find((p) => p.id === id);
+  const post_id = posts.find((p) => p.id === id);
   // console.log(posts);
   const dispatch = useDispatch();
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        dispatch(updatePost({ title, body }));
-      }}
-    >
+    <form onSubmit={(e) => e.preventDefault()}>
       <input
         value={title}
         type="text"
@@ -35,9 +29,13 @@ const UpdatePostForm = () => {
         placeholder="New Body"
         onChange={(e) => setBody(e.target.value)}
       />
-      {/* <NavLink to="/posts"> */}
-      <input type="submit" value="Update" />
-      {/* </NavLink> */}
+      <NavLink to="/posts">
+        <input
+          type="submit"
+          value="Update"
+          onClick={() => dispatch(postUpdate({ title, body }))}
+        />
+      </NavLink>
     </form>
   );
 };

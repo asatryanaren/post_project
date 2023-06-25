@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectPostsState,
   selectPostsId,
-  deletePost,
+  getInitialpostState,
+  postDelete,
 } from "../../features/postsSlice";
 import { selectEmailUser, selectUsersData } from "../../features/usersSlice";
 import { NavLink } from "react-router-dom";
@@ -14,7 +15,7 @@ const Post = () => {
   const data = useSelector(selectUsersData);
   const dispatch = useDispatch();
 
-  const postDelete = () => dispatch(deletePost());
+  const Delete = (id) => dispatch(postDelete(id));
   return (
     <div>
       <UpdatePostForm />
@@ -28,9 +29,11 @@ const Post = () => {
                 (el) => (el.email === email && el.id === p.id) || p.id < 1
               ) && (
                 <div>
-                  <button>Edit</button>
+                  <button onClick={() => dispatch(getInitialpostState(p))}>
+                    Edit
+                  </button>
                   <NavLink to="/posts">
-                    <button onClick={postDelete}>Delete</button>
+                    <button onClick={() => Delete(p.id)}>Delete</button>
                   </NavLink>
                 </div>
               )}

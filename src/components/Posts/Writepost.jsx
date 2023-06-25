@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  addPost,
+  postAdd,
   selectPostsState,
   selectShowNewBlockState,
   showNewBLockPost,
@@ -16,15 +16,17 @@ const WritePost = () => {
   const [newPostBody, setNewPostBody] = useState("");
   const posts = useSelector(selectPostsState);
 
-  const postAdd = () => {
+  const postAd = () => {
     dispatch(
-      addPost({
+      postAdd({
         title: newPostTitle,
         body: newPostBody,
         userId: posts.length,
         id: Math.random(),
       })
     );
+    setNewPostTitle("");
+    setNewPostBody("");
   };
 
   return (
@@ -48,7 +50,7 @@ const WritePost = () => {
               onChange={(e) => setNewPostBody(e.target.value)}
             />
           </label>
-          <input type="submit" value="Add" onClick={postAdd} />
+          <input type="submit" value="Add" onClick={postAd} />
         </form>
       )}
     </div>
