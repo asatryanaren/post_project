@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const postsAPI = createAsyncThunk(
@@ -7,7 +7,7 @@ export const postsAPI = createAsyncThunk(
     const response = await axios
       .get("https://jsonplaceholder.typicode.com/posts?_limit=10")
       .then((resp) => resp.data);
-    dispatch(getPostState());
+    dispatch(getPostState(response));
     return response;
   }
 );
@@ -32,20 +32,10 @@ export const postDelete = createAsyncThunk(
     return response;
   }
 );
-export const postUpdate = createAsyncThunk(
-  "post/update",
-  async (post, { dispatch }) => {
-    const newPost = { userId: 1, title: post.title, body: post.body };
-    const response = await axios
-      .patch(`https://jsonplaceholder.typicode.com/posts`, { newPost })
-      .then((resp) => console.log(resp));
-    dispatch(updatePost(newPost));
-    return response;
-  }
-);
 
 const initialState = {
   showNewBlockPostState: false,
+  showUpdateBlockstate: false,
   postsState: [],
   postId: null,
   initialPost: {},
@@ -57,21 +47,20 @@ const postsSlice = createSlice({
     showNewBLockPost: (state, action) => {
       state.showNewBlockPostState = action.payload;
     },
+    showUpdateBlock: (state, action) => {
+      state.showUpdateBlockstate = action.payload;
+    },
     getPostState: (state, action) => {
       state.postsState = action.payload;
     },
     getPostClickId: (state, action) => {
       state.postId = action.payload;
     },
-    getInitialpostState: (state, action) => {
-      state.initialPost = action.payload;
-    },
     updatePost: (state, action) => {
-      const index = state.postsState.indexOf(state.postId);
-
-      state.postsState = state.postsState.map((post, i) =>
-        post[i] === index ? (post[i] = action.payload) : post
-      );
+      const { id, title, body } = action.payload;
+      const pi = state.postsState.find((post) => post.id === id);
+      if (pi) pi.title = title;
+      pi.body = body;
     },
     deletePost: (state) => {
       state.postsState = state.postsState.filter((p) => p.id !== state.postId);
@@ -80,26 +69,21 @@ const postsSlice = createSlice({
       state.postsState = [action.payload, ...state.postsState];
     },
   },
-  extraReducers: {
-    [postsAPI.pending]: (state) => {},
-    [postsAPI.fulfilled]: (state, action) => {
-      state.postsState = action.payload;
-    },
-    [postsAPI.pending]: (state) => {},
-  },
 });
 export const selectShowNewBlockState = (state) =>
   state.postsSlice.showNewBlockPostState;
+export const selectShowUpdateBlockstate = (state) =>
+  state.postsSlice.showUpdateBlockstate;
 export const selectPostsState = (state) => state.postsSlice.postsState;
 export const selectPostsId = (state) => state.postsSlice.postId;
 export const {
   showNewBLockPost,
+  showUpdateBlock,
   getPostState,
   getPostClickId,
   updatePost,
   deletePost,
   addPost,
-  getInitialpostState,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;

@@ -6,12 +6,18 @@ import {
   showNewBLockPost,
 } from "../../features/postsSlice";
 import { useState } from "react";
+import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import {
+  buttonStyle,
+  containerStyle,
+  paperStyle,
+} from "./styles/writepostStyle";
 
 const WritePost = () => {
   const stateForm = useSelector(selectShowNewBlockState);
   const dispatch = useDispatch();
   const showForm = () => dispatch(showNewBLockPost(true));
-  document.addEventListener("click", () => dispatch(showNewBLockPost(false)));
+  window.addEventListener("click", () => dispatch(showNewBLockPost(false)));
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostBody, setNewPostBody] = useState("");
   const posts = useSelector(selectPostsState);
@@ -27,33 +33,44 @@ const WritePost = () => {
     );
     setNewPostTitle("");
     setNewPostBody("");
+    dispatch(showNewBLockPost(false));
   };
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
-      <button onClick={showForm}>Add post</button>
+    <Grid style={containerStyle} onClick={(e) => e.stopPropagation()}>
+      <Button variant="contained" onClick={showForm} style={buttonStyle}>
+        Add post
+      </Button>
       {stateForm && (
-        <form onSubmit={(e) => e.preventDefault()}>
-          <label>
-            Write Title Post
-            <input
+        <Paper style={paperStyle}>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Typography>Write Title Post</Typography>
+            <TextField
               type="text"
               value={newPostTitle}
               onChange={(e) => setNewPostTitle(e.target.value)}
+              fullWidth
             />
-          </label>
-          <label>
-            Write Post
-            <input
+            <Typography>Write Post</Typography>
+            <TextField
               type="text"
               value={newPostBody}
               onChange={(e) => setNewPostBody(e.target.value)}
+              fullWidth
             />
-          </label>
-          <input type="submit" value="Add" onClick={postAd} />
-        </form>
+            <Button
+              onClick={postAd}
+              style={buttonStyle}
+              disabled={
+                (newPostTitle.length || newPostBody.length) <= 0 && true
+              }
+            >
+              Add
+            </Button>
+          </form>
+        </Paper>
       )}
-    </div>
+    </Grid>
   );
 };
 export default WritePost;

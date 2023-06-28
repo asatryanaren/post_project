@@ -1,42 +1,68 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  postUpdate,
-  selectPostsId,
-  selectPostsState,
-} from "../../features/postsSlice";
+import { selectPostsId, updatePost } from "../../features/postsSlice";
 import { NavLink } from "react-router-dom";
+import {
+  Button,
+  Dialog,
+  Paper,
+  TextField,
+  Typography,
+} from "@material-ui/core";
+import {
+  buttonStyle,
+  containerstyle,
+  textFieldStyle,
+} from "./styles/updatePost";
 
 const UpdatePostForm = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const id = useSelector(selectPostsId);
-  const posts = useSelector(selectPostsState);
-  const post_id = posts.find((p) => p.id === id);
-  // console.log(posts);
   const dispatch = useDispatch();
+  const update = () => dispatch(updatePost({ title, body, id }));
+
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <input
-        value={title}
-        type="text"
-        placeholder="New Title"
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <input
-        value={body}
-        type="text"
-        placeholder="New Body"
-        onChange={(e) => setBody(e.target.value)}
-      />
-      <NavLink to="/posts">
-        <input
-          type="submit"
-          value="Update"
-          onClick={() => dispatch(postUpdate({ title, body }))}
-        />
-      </NavLink>
-    </form>
+    <Paper style={containerstyle}>
+      <Dialog open={true}>
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          onClick={(e) => e.stopPropagation()}
+          style={{ padding: "20px" }}
+        >
+          <Typography variant="h5">Update your post here</Typography>
+          <TextField
+            value={title}
+            label="New Title"
+            fullWidth
+            style={textFieldStyle}
+            required
+            type="text"
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <TextField
+            value={body}
+            label="New Post"
+            fullWidth
+            style={textFieldStyle}
+            required
+            type="text"
+            onChange={(e) => setBody(e.target.value)}
+          />
+          <NavLink to="/posts">
+            <Button
+              fullWidth
+              variant="contained"
+              style={buttonStyle}
+              onClick={update}
+              disabled={(title.length || body.length) <= 0 && true}
+            >
+              Update
+            </Button>
+          </NavLink>
+        </form>
+      </Dialog>
+    </Paper>
   );
 };
 export default UpdatePostForm;

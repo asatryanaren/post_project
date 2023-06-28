@@ -14,7 +14,6 @@ const usersSlice = createSlice({
   reducers: {
     getEmailUser: (state, action) => {
       state.emailUser = action.payload;
-      console.log(state.emailUser);
     },
     getUsers: (state, action) => {
       state.users = action.payload;

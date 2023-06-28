@@ -5,7 +5,9 @@ import axios from "axios";
 import {
   getData,
   getFormNewEmail,
+  getFormNewPassword,
   selectFormEmail,
+  selectFormPassword,
   selectRegisteredUser,
 } from "../../features/formSlice";
 import { registered } from "../../features/formSlice";
@@ -14,53 +16,95 @@ import {
   getUsersData,
   selectUsersData,
 } from "../../features/usersSlice";
+import { TextField, Button, Typography, Grid, Paper } from "@material-ui/core";
+import {
+  buttonStyle,
+  paperStyle,
+  typograhyStyle,
+  validedUserStyle,
+} from "./formPageStyle";
 
 const FormPage = () => {
-  const [password, setPassword] = useState("");
-  const validUser = useSelector(selectRegisteredUser);
   const dispatch = useDispatch();
-
+  const validUser = useSelector(selectRegisteredUser);
   const email = useSelector(selectFormEmail);
+  const password = useSelector(selectFormPassword);
+  const getPassword = (e) => dispatch(getFormNewPassword(e.target.value));
+  const getEmail = (e) => {
+    dispatch(getFormNewEmail(e.target.value));
+    return dispatch(getEmailUser(e.target.value));
+  };
+  const userData = useSelector(selectUsersData);
+  const [validedUser, setValidedUser] = useState(false);
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.data)
-      .then((resp) => {
-        dispatch(getData([...resp]));
-        dispatch(getUsersData([...resp]));
-      });
-    dispatch(registered(email));
-  }, [email]);
+    return async () => {
+      const response = await axios
+        .get("https://jsonplaceholder.typicode.com/users")
+        .then((response) => response.data);
+      dispatch(getData(response)); //
+      dispatch(getUsersData(response)); //
+      dispatch(registered({ email, password }));
+      return response;
+    };
+  }, [email, password, userData]);
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-      }}
-    >
-      <p>Login to your account</p>
-      <input
-        type="email"
-        value={email}
-        placeholder="email"
-        required
-        onChange={(e) => {
-          dispatch(getFormNewEmail(e.target.value));
+    <Grid>
+      <Paper elevation={10} style={paperStyle}>
+        <form onSubmit={(e) => e.preventDefault()}>
+          <Typography variant="h5" style={typograhyStyle}>
+            Login to your account
+          </Typography>
+          <TextField
+            label="email"
+            variant="outlined"
+            fullWidth
+            type="email"
+            value={email}
+            required
+            onChange={(e) => getEmail(e)}
+          />
 
-          return dispatch(getEmailUser(e.target.value));
-        }}
-      />
-      <input
-        type="password"
-        value={password}
-        placeholder="Password"
-        required
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">
-        {validUser ? <NavLink to="/posts"> Enter</NavLink> : "Enter"}
-      </button>
-    </form>
+          <TextField
+            label="password"
+            variant="outlined"
+            fullWidth
+            style={{ margin: "15px 0" }}
+            type="password"
+            value={password}
+            required
+            onChange={(e) => getPassword(e)}
+          />
+          {validedUser && (
+            <Typography style={validedUserStyle}>
+              Email or password is not correct
+            </Typography>
+          )}
+          {validUser ? (
+            <NavLink to="/posts">
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                style={buttonStyle}
+              >
+                Enter
+              </Button>
+            </NavLink>
+          ) : (
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              style={buttonStyle}
+              onClick={() => setValidedUser(true)}
+            >
+              Enter
+            </Button>
+          )}
+        </form>
+      </Paper>
+    </Grid>
   );
 };
 export default FormPage;
