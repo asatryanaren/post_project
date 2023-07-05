@@ -1,11 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getData, registered } from "./loginSlice";
+import axios from "axios";
+
+export const usersAPI = createAsyncThunk(
+  "posts",
+  async (user, { dispatch }) => {
+    const { email, password } = user;
+    const response = await axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((resp) => resp.data);
+    dispatch(getData(response));
+    dispatch(getUsersData(response));
+    dispatch(registered({ email, password }));
+  }
+);
 
 const initialState = {
-  userId: [],
   emailUser: "",
   emailsUsers: [],
   buttonState: false,
-  users: [],
   data: [],
 };
 const usersSlice = createSlice({
@@ -15,9 +28,6 @@ const usersSlice = createSlice({
     getEmailUser: (state, action) => {
       state.emailUser = action.payload;
     },
-    getUsers: (state, action) => {
-      state.users = action.payload;
-    },
     getUsersData: (state, action) => {
       state.data = action.payload;
       state.userId = action.payload.map((id) => id.id);
@@ -25,12 +35,10 @@ const usersSlice = createSlice({
     },
   },
 });
-export const selectUserId = (state) => state.usersSlice.userId;
 export const selectbuttonState = (state) => state.usersSlice.buttonState;
 export const selectEmailUser = (state) => state.usersSlice.emailUser;
 export const selectEmailsUsers = (state) => state.usersSlice.emailsUsers;
-
-export const selectUsers = (state) => state.usersSlice.users;
 export const selectUsersData = (state) => state.usersSlice.data;
-export const { getEmailUser, getUsers, getUsersData } = usersSlice.actions;
+
+export const { getEmailUser, getUsersData } = usersSlice.actions;
 export default usersSlice.reducer;

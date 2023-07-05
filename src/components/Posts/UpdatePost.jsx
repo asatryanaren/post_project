@@ -9,11 +9,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import {
-  buttonStyle,
-  containerstyle,
-  textFieldStyle,
-} from "./styles/updatePost";
+import { updatePostStyle } from "./styles/updatePost";
 
 const UpdatePostForm = () => {
   const [title, setTitle] = useState("");
@@ -21,21 +17,22 @@ const UpdatePostForm = () => {
   const id = useSelector(selectPostsId);
   const dispatch = useDispatch();
   const update = () => dispatch(updatePost({ title, body, id }));
+  const style = updatePostStyle();
 
   return (
-    <Paper style={containerstyle}>
+    <Paper className={style.container}>
       <Dialog open={true}>
         <form
           onSubmit={(e) => e.preventDefault()}
           onClick={(e) => e.stopPropagation()}
-          style={{ padding: "20px" }}
+          className={style.form}
         >
           <Typography variant="h5">Update your post here</Typography>
           <TextField
             value={title}
             label="New Title"
             fullWidth
-            style={textFieldStyle}
+            className={style.textField}
             required
             type="text"
             onChange={(e) => setTitle(e.target.value)}
@@ -44,7 +41,7 @@ const UpdatePostForm = () => {
             value={body}
             label="New Post"
             fullWidth
-            style={textFieldStyle}
+            className={style.textField}
             required
             type="text"
             onChange={(e) => setBody(e.target.value)}
@@ -53,7 +50,7 @@ const UpdatePostForm = () => {
             <Button
               fullWidth
               variant="contained"
-              style={buttonStyle}
+              className={style.btn}
               onClick={update}
               disabled={(title.length || body.length) <= 0 && true}
             >

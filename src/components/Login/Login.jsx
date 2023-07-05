@@ -1,58 +1,38 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import axios from "axios";
 import {
-  getData,
-  getFormNewEmail,
-  getFormNewPassword,
-  selectFormEmail,
-  selectFormPassword,
+  getLoginNewEmail,
+  getLoginNewPassword,
+  selectLoginEmail,
+  selectLoginPassword,
   selectRegisteredUser,
-} from "../../features/formSlice";
-import { registered } from "../../features/formSlice";
-import {
-  getEmailUser,
-  getUsersData,
-  selectUsersData,
-} from "../../features/usersSlice";
+} from "../../features/loginSlice";
+import { getEmailUser, usersAPI } from "../../features/usersSlice";
 import { TextField, Button, Typography, Grid, Paper } from "@material-ui/core";
-import {
-  buttonStyle,
-  paperStyle,
-  typograhyStyle,
-  validedUserStyle,
-} from "./formPageStyle";
+import { loginStyles } from "./loginStyle";
 
-const FormPage = () => {
+const Login = () => {
   const dispatch = useDispatch();
   const validUser = useSelector(selectRegisteredUser);
-  const email = useSelector(selectFormEmail);
-  const password = useSelector(selectFormPassword);
-  const getPassword = (e) => dispatch(getFormNewPassword(e.target.value));
+  const email = useSelector(selectLoginEmail);
+  const password = useSelector(selectLoginPassword);
+  const getPassword = (e) => dispatch(getLoginNewPassword(e.target.value));
   const getEmail = (e) => {
-    dispatch(getFormNewEmail(e.target.value));
-    return dispatch(getEmailUser(e.target.value));
+    dispatch(getLoginNewEmail(e.target.value));
+    dispatch(getEmailUser(e.target.value));
   };
-  const userData = useSelector(selectUsersData);
   const [validedUser, setValidedUser] = useState(false);
+  const styles = loginStyles();
   useEffect(() => {
-    return async () => {
-      const response = await axios
-        .get("https://jsonplaceholder.typicode.com/users")
-        .then((response) => response.data);
-      dispatch(getData(response)); //
-      dispatch(getUsersData(response)); //
-      dispatch(registered({ email, password }));
-      return response;
-    };
-  }, [email, password, userData]);
+    dispatch(usersAPI({ email, password }));
+  }, [email, password]);
 
   return (
     <Grid>
-      <Paper elevation={10} style={paperStyle}>
+      <Paper elevation={10} className={styles.paper}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <Typography variant="h5" style={typograhyStyle}>
+          <Typography variant="h5" className={styles.typography}>
             Login to your account
           </Typography>
           <TextField
@@ -70,23 +50,24 @@ const FormPage = () => {
             variant="outlined"
             fullWidth
             style={{ margin: "15px 0" }}
+            className={styles.textfield}
             type="password"
             value={password}
             required
             onChange={(e) => getPassword(e)}
           />
           {validedUser && (
-            <Typography style={validedUserStyle}>
+            <Typography className={styles.validedUser}>
               Email or password is not correct
             </Typography>
           )}
           {validUser ? (
-            <NavLink to="/posts">
+            <NavLink to="/posts/:page">
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
-                style={buttonStyle}
+                className={styles.btn}
               >
                 Enter
               </Button>
@@ -96,7 +77,7 @@ const FormPage = () => {
               type="submit"
               variant="contained"
               fullWidth
-              style={buttonStyle}
+              className={styles.btn}
               onClick={() => setValidedUser(true)}
             >
               Enter
@@ -107,4 +88,4 @@ const FormPage = () => {
     </Grid>
   );
 };
-export default FormPage;
+export default Login;

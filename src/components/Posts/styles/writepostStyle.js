@@ -1,13 +1,25 @@
-export const buttonStyle = {
-  backgroundColor: "blue",
-  color: "white",
-  display: "block",
-  margin: "20px auto",
-};
-export const paperStyle = {
-  padding: "20px",
-  position: "absolute",
-  top: "80px",
-  right: "95px",
-};
-export const containerStyle = { display: "block", marginLeft: "50px " };
+import { makeStyles } from "@material-ui/core";
+
+export const writePostStyle = makeStyles({
+  btn: {
+    backgroundColor: "blue",
+    color: "white",
+    display: "block",
+    margin: "20px auto",
+    "&:disabled": {
+      backgroundColor: "blue",
+      color: "white",
+    },
+    "&:hover": {
+      backgroundColor: "#3A43F6",
+      color: "white",
+    },
+  },
+  paper: {
+    padding: "20px",
+    position: "absolute",
+    top: "80px",
+    right: "95px",
+  },
+  container: { display: "block", marginLeft: "50px " },
+});

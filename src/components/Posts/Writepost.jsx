@@ -7,11 +7,7 @@ import {
 } from "../../features/postsSlice";
 import { useState } from "react";
 import { Button, Grid, Paper, TextField, Typography } from "@material-ui/core";
-import {
-  buttonStyle,
-  containerStyle,
-  paperStyle,
-} from "./styles/writepostStyle";
+import { writePostStyle } from "./styles/writepostStyle";
 
 const WritePost = () => {
   const stateForm = useSelector(selectShowNewBlockState);
@@ -21,6 +17,7 @@ const WritePost = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostBody, setNewPostBody] = useState("");
   const posts = useSelector(selectPostsState);
+  const style = writePostStyle();
 
   const postAd = () => {
     dispatch(
@@ -37,12 +34,12 @@ const WritePost = () => {
   };
 
   return (
-    <Grid style={containerStyle} onClick={(e) => e.stopPropagation()}>
-      <Button variant="contained" onClick={showForm} style={buttonStyle}>
+    <Grid className={style.container} onClick={(e) => e.stopPropagation()}>
+      <Button variant="contained" onClick={showForm} className={style.btn}>
         Add post
       </Button>
       {stateForm && (
-        <Paper style={paperStyle}>
+        <Paper className={style.paper}>
           <form onSubmit={(e) => e.preventDefault()}>
             <Typography>Write Title Post</Typography>
             <TextField
@@ -60,7 +57,7 @@ const WritePost = () => {
             />
             <Button
               onClick={postAd}
-              style={buttonStyle}
+              className={style.btn}
               disabled={
                 (newPostTitle.length || newPostBody.length) <= 0 && true
               }

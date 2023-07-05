@@ -5,31 +5,23 @@ export const postsAPI = createAsyncThunk(
   "posts",
   async (post, { dispatch }) => {
     const response = await axios
-      .get("https://jsonplaceholder.typicode.com/posts?_limit=10")
+      .get(`https://jsonplaceholder.typicode.com/posts`)
       .then((resp) => resp.data);
     dispatch(getPostState(response));
-    return response;
   }
 );
 export const postAdd = createAsyncThunk(
   "post/add",
   async (post, { dispatch }) => {
-    const response = await axios.post(
-      `https://jsonplaceholder.typicode.com/posts`,
-      { post }
-    );
+    await axios.post(`https://jsonplaceholder.typicode.com/posts`, { post });
     dispatch(addPost(post));
-    return response;
   }
 );
 export const postDelete = createAsyncThunk(
   "posts/deletePost",
   async (id, { dispatch }) => {
-    const response = await axios.delete(
-      `https://jsonplaceholder.typicode.com/posts/${id}`
-    );
+    await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
     dispatch(deletePost(id));
-    return response;
   }
 );
 
@@ -38,7 +30,7 @@ const initialState = {
   showUpdateBlockstate: false,
   postsState: [],
   postId: null,
-  initialPost: {},
+  currentPage: 1,
 };
 const postsSlice = createSlice({
   name: "posts",
@@ -68,6 +60,9 @@ const postsSlice = createSlice({
     addPost: (state, action) => {
       state.postsState = [action.payload, ...state.postsState];
     },
+    updateCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
   },
 });
 export const selectShowNewBlockState = (state) =>
@@ -76,6 +71,7 @@ export const selectShowUpdateBlockstate = (state) =>
   state.postsSlice.showUpdateBlockstate;
 export const selectPostsState = (state) => state.postsSlice.postsState;
 export const selectPostsId = (state) => state.postsSlice.postId;
+export const selectCurrentPage = (state) => state.postsSlice.currentPage;
 export const {
   showNewBLockPost,
   showUpdateBlock,
@@ -84,6 +80,7 @@ export const {
   updatePost,
   deletePost,
   addPost,
+  updateCurrentPage,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;
