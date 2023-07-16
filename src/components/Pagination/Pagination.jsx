@@ -15,7 +15,7 @@ const Pagination = ({ postsPerPage, totalPosts }) => {
     <Container className={style.container}>
       {pageNumbers.map((number, i) => (
         <NavLink
-          to={`/posts/:page${i + 1}`}
+          to={`/posts/page/${i + 1}`}
           key={number}
           className={style.link}
           onClick={() => dispatch(updateCurrentPage(number))}

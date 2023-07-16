@@ -10,6 +10,13 @@ export const postsAPI = createAsyncThunk(
     dispatch(getPostState(response));
   }
 );
+export const postAPI = createAsyncThunk("posts", async (id, { dispatch }) => {
+  console.log(id);
+  const response = await axios
+    .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
+    .then((resp) => resp.data);
+  dispatch(getSinglePostState(response));
+});
 export const postAdd = createAsyncThunk(
   "post/add",
   async (post, { dispatch }) => {
@@ -20,44 +27,42 @@ export const postAdd = createAsyncThunk(
 export const postDelete = createAsyncThunk(
   "posts/deletePost",
   async (id, { dispatch }) => {
+    console.log("slice id ", id);
     await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
     dispatch(deletePost(id));
   }
 );
 
 const initialState = {
-  showNewBlockPostState: false,
-  showUpdateBlockstate: false,
   postsState: [],
-  postId: null,
   currentPage: 1,
+  singlePost: null,
 };
 const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    showNewBLockPost: (state, action) => {
-      state.showNewBlockPostState = action.payload;
-    },
-    showUpdateBlock: (state, action) => {
-      state.showUpdateBlockstate = action.payload;
-    },
     getPostState: (state, action) => {
       state.postsState = action.payload;
     },
-    getPostClickId: (state, action) => {
-      state.postId = action.payload;
+    getSinglePostState: (state, action) => {
+      state.singlePost = action.payload;
     },
     updatePost: (state, action) => {
-      const { id, title, body } = action.payload;
-      const pi = state.postsState.find((post) => post.id === id);
-      if (pi) pi.title = title;
-      pi.body = body;
+      const { title, body, id } = action.payload;
+      const p = state.postsState.find((post) => post.id === +id);
+      if (p) {
+        p.title = title;
+        p.body = body;
+      }
     },
     deletePost: (state) => {
-      state.postsState = state.postsState.filter((p) => p.id !== state.postId);
+      state.postsState = state.postsState.filter(
+        (p) => p.id !== state.singlePost.id
+      );
     },
     addPost: (state, action) => {
+      console.log(action.payload);
       state.postsState = [action.payload, ...state.postsState];
     },
     updateCurrentPage: (state, action) => {
@@ -65,22 +70,16 @@ const postsSlice = createSlice({
     },
   },
 });
-export const selectShowNewBlockState = (state) =>
-  state.postsSlice.showNewBlockPostState;
-export const selectShowUpdateBlockstate = (state) =>
-  state.postsSlice.showUpdateBlockstate;
 export const selectPostsState = (state) => state.postsSlice.postsState;
-export const selectPostsId = (state) => state.postsSlice.postId;
 export const selectCurrentPage = (state) => state.postsSlice.currentPage;
+export const selectSinglePost = (state) => state.postsSlice.singlePost;
 export const {
-  showNewBLockPost,
-  showUpdateBlock,
   getPostState,
-  getPostClickId,
   updatePost,
   deletePost,
   addPost,
   updateCurrentPage,
+  getSinglePostState,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;

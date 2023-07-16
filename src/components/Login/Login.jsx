@@ -1,37 +1,26 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
-import {
-  getLoginNewEmail,
-  getLoginNewPassword,
-  selectLoginEmail,
-  selectLoginPassword,
-  selectRegisteredUser,
-} from "../../features/loginSlice";
-import { getEmailUser, usersAPI } from "../../features/usersSlice";
+import { useNavigate } from "react-router-dom";
+import { selectErrorMessage, usersAPI } from "../../features/usersSlice";
 import { TextField, Button, Typography, Grid, Paper } from "@material-ui/core";
 import { loginStyles } from "./loginStyle";
+import { useState } from "react";
 
 const Login = () => {
+  const errorMessage = useSelector(selectErrorMessage);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const validUser = useSelector(selectRegisteredUser);
-  const email = useSelector(selectLoginEmail);
-  const password = useSelector(selectLoginPassword);
-  const getPassword = (e) => dispatch(getLoginNewPassword(e.target.value));
-  const getEmail = (e) => {
-    dispatch(getLoginNewEmail(e.target.value));
-    dispatch(getEmailUser(e.target.value));
-  };
-  const [validedUser, setValidedUser] = useState(false);
   const styles = loginStyles();
-  useEffect(() => {
-    dispatch(usersAPI({ email, password }));
-  }, [email, password]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch(usersAPI({ email, password, navigate }));
+  };
 
   return (
     <Grid>
       <Paper elevation={10} className={styles.paper}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={onSubmit}>
           <Typography variant="h5" className={styles.typography}>
             Login to your account
           </Typography>
@@ -42,7 +31,7 @@ const Login = () => {
             type="email"
             value={email}
             required
-            onChange={(e) => getEmail(e)}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <TextField
@@ -54,35 +43,22 @@ const Login = () => {
             type="password"
             value={password}
             required
-            onChange={(e) => getPassword(e)}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          {validedUser && (
-            <Typography className={styles.validedUser}>
-              Email or password is not correct
+          {errorMessage && (
+            <Typography className={styles.errorMessage}>
+              {errorMessage}
             </Typography>
           )}
-          {validUser ? (
-            <NavLink to="/posts/:page">
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                className={styles.btn}
-              >
-                Enter
-              </Button>
-            </NavLink>
-          ) : (
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              className={styles.btn}
-              onClick={() => setValidedUser(true)}
-            >
-              Enter
-            </Button>
-          )}
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            className={styles.btn}
+          >
+            Enter
+          </Button>
         </form>
       </Paper>
     </Grid>

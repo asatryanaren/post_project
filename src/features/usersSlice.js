@@ -1,25 +1,32 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getData, registered } from "./loginSlice";
 import axios from "axios";
 
 export const usersAPI = createAsyncThunk(
   "posts",
   async (user, { dispatch }) => {
-    const { email, password } = user;
+    const { email, password, navigate } = user;
     const response = await axios
       .get("https://jsonplaceholder.typicode.com/users")
       .then((resp) => resp.data);
-    dispatch(getData(response));
-    dispatch(getUsersData(response));
-    dispatch(registered({ email, password }));
+    const loggedInUser = response?.find(
+      (user) => email === user.email && password === user.email
+    );
+    console.log(loggedInUser);
+    if (loggedInUser) {
+      localStorage.setItem("email", email);
+      localStorage.setItem("userId", loggedInUser.id);
+      dispatch(updateUser(loggedInUser));
+      navigate("/posts");
+    } else {
+      dispatch(addErrorMessage());
+    }
   }
 );
 
 const initialState = {
-  emailUser: "",
-  emailsUsers: [],
-  buttonState: false,
   data: [],
+  isLoggedIn: localStorage.getItem("email") ?? false,
+  errorMessage: "",
 };
 const usersSlice = createSlice({
   name: "users",
@@ -30,15 +37,21 @@ const usersSlice = createSlice({
     },
     getUsersData: (state, action) => {
       state.data = action.payload;
-      state.userId = action.payload.map((id) => id.id);
-      state.emailsUsers = action.payload.map((email) => email.email);
+    },
+    updateUser: (state, action) => {
+      state.user = action.payload.loggedInUser;
+      state.isLoggedIn = true;
+      state.errorMessage = "";
+    },
+    addErrorMessage: (state) => {
+      state.errorMessage = "Email or password is not correct";
     },
   },
 });
-export const selectbuttonState = (state) => state.usersSlice.buttonState;
-export const selectEmailUser = (state) => state.usersSlice.emailUser;
-export const selectEmailsUsers = (state) => state.usersSlice.emailsUsers;
 export const selectUsersData = (state) => state.usersSlice.data;
+export const selectIsLoggedIn = (state) => state.usersSlice.isLoggedIn;
+export const selectErrorMessage = (state) => state.usersSlice.errorMessage;
 
-export const { getEmailUser, getUsersData } = usersSlice.actions;
+export const { getEmailUser, getUsersData, updateUser, addErrorMessage } =
+  usersSlice.actions;
 export default usersSlice.reducer;

@@ -17,7 +17,7 @@ export const loginStyles = makeStyles({
       color: "white",
     },
   },
-  validedUser: { color: "red", marginBottom: "13px" },
+  errorMessage: { color: "red", marginBottom: "13px" },
   typograhy: { marginBottom: "20px", textAlign: "center" },
   textfield: { margin: "15px 0" },
 });
