@@ -3,8 +3,9 @@ import {
   postAPI,
   selectSinglePost,
   deletePost,
+  selectCurrentPage,
 } from "../../features/postsSlice";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { Button, Container, Paper, Typography } from "@material-ui/core";
 import { postStyles } from "./styles/postStyle";
 import { useEffect } from "react";
@@ -12,15 +13,15 @@ import { useEffect } from "react";
 const Post = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const navigate = useNavigate();
-  const goBack = () => navigate(-1);
+  const page = useSelector(selectCurrentPage);
   const Delete = (id) => {
     dispatch(deletePost(id));
-    goBack();
+    localStorage.removeItem("post");
   };
   const style = postStyles();
   const userId = localStorage.getItem("userId");
   const singlePost = useSelector(selectSinglePost);
+  localStorage.setItem("post", JSON.stringify(singlePost));
   useEffect(() => {
     if (id) dispatch(postAPI(id));
   }, [id, dispatch]);
@@ -33,20 +34,22 @@ const Post = () => {
           <Typography variant="body1" className={style.postBody}>
             {singlePost.body}
           </Typography>
-          {singlePost.userId == userId && (
+          {(singlePost.userId == userId || singlePost.id < 1) && (
             <div>
               <NavLink to={`/post/${id}/updatepost`}>
                 <Button variant="contained" className={style.btn}>
                   Edit
                 </Button>
               </NavLink>
-              <Button
-                onClick={() => Delete(singlePost.id)}
-                variant="contained"
-                className={style.btn}
-              >
-                Delete
-              </Button>
+              <NavLink to={`/posts/page/${page} `}>
+                <Button
+                  onClick={() => Delete(singlePost.id)}
+                  variant="contained"
+                  className={style.btn}
+                >
+                  Delete
+                </Button>
+              </NavLink>
             </div>
           )}
         </Container>

@@ -16,8 +16,7 @@ const AddPost = () => {
       postAdd({
         title: newPostTitle,
         body: newPostBody,
-        // userId: posts.length,
-        // id: Math.random(),
+        id: Math.random(),
       })
     );
     setNewPostTitle("");

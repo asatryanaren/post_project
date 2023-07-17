@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getSinglePostState,
   postsAPI,
   selectCurrentPage,
   selectPostsState,
@@ -46,7 +47,12 @@ const Posts = () => {
         return (
           <Grid key={post.id}>
             <NavLink to={`/post/${post.id}`} className={styles.postsTitle}>
-              <Typography variant="h6">{post.title}</Typography>
+              <Typography
+                variant="h6"
+                onClick={() => dispatch(getSinglePostState(post))}
+              >
+                {post.title}
+              </Typography>
             </NavLink>
           </Grid>
         );

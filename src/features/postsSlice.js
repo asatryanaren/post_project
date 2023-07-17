@@ -11,7 +11,6 @@ export const postsAPI = createAsyncThunk(
   }
 );
 export const postAPI = createAsyncThunk("posts", async (id, { dispatch }) => {
-  console.log(id);
   const response = await axios
     .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
     .then((resp) => resp.data);
@@ -66,6 +65,7 @@ const postsSlice = createSlice({
       state.postsState = [action.payload, ...state.postsState];
     },
     updateCurrentPage: (state, action) => {
+      console.log(action.payload);
       state.currentPage = action.payload;
     },
   },
