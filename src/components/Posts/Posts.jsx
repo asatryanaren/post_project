@@ -2,7 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getSinglePostState,
   postsAPI,
-  selectCurrentPage,
+  postsLength,
+  selectBasePostsLength,
   selectPostsState,
 } from "../../features/postsSlice";
 import { NavLink, useSearchParams } from "react-router-dom";
@@ -14,26 +15,24 @@ import { useEffect } from "react";
 const Posts = () => {
   const dispatch = useDispatch();
   const posts = useSelector(selectPostsState);
+  const Length = useSelector(selectBasePostsLength);
   const styles = postsStyle();
-  const currentPage = useSelector(selectCurrentPage);
   const postsPerPage = 10;
-  const lastPostsIndex = currentPage * postsPerPage;
-  const firstPostsIndex = lastPostsIndex - postsPerPage;
-  const currentPosts = posts.slice(firstPostsIndex, lastPostsIndex);
-
+  let localCurrentPage = localStorage.getItem("currentPage");
+  localCurrentPage = JSON.parse(localCurrentPage);
   let [searchParams] = useSearchParams();
   const page = searchParams.get("page");
+
   useEffect(() => {
-    if (posts.length === 0) {
-      dispatch(postsAPI());
-    }
-  }, [dispatch]);
+    dispatch(postsAPI(localCurrentPage));
+    dispatch(postsLength());
+  }, [dispatch, localCurrentPage]);
 
   return (
     <Container>
       <Grid container className={styles.flexContainer}>
         <Typography variant="h4">
-          There are {posts.length} post in the database
+          There are {Length} post in the database
         </Typography>
         <NavLink to="/addpost" className={styles.link}>
           <Button variant="contained" className={styles.btn}>
@@ -43,7 +42,7 @@ const Posts = () => {
       </Grid>
       <Typography variant="h6">Posts title</Typography>
       <hr />
-      {currentPosts.map((post) => {
+      {posts.map((post) => {
         return (
           <Grid key={post.id}>
             <NavLink to={`/post/${post.id}`} className={styles.postsTitle}>
@@ -57,7 +56,11 @@ const Posts = () => {
           </Grid>
         );
       })}
-      <Pagination postsPerPage={postsPerPage} totalPosts={posts.length} />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={Length}
+        currentPosts
+      />
     </Container>
   );
 };

@@ -11,12 +11,11 @@ export const usersAPI = createAsyncThunk(
     const loggedInUser = response?.find(
       (user) => email === user.email && password === user.email
     );
-    console.log(loggedInUser);
     if (loggedInUser) {
       localStorage.setItem("email", email);
       localStorage.setItem("userId", loggedInUser.id);
       dispatch(updateUser(loggedInUser));
-      navigate("/posts");
+      navigate("/posts/page/1");
     } else {
       dispatch(addErrorMessage());
     }

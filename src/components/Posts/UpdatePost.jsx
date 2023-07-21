@@ -1,13 +1,17 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { updatePost } from "../../features/postsSlice";
-import { NavLink, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSinglePost, updatePost } from "../../features/postsSlice";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, TextField, Typography } from "@material-ui/core";
 import { updatePostStyle } from "./styles/updatePost";
 
 const UpdatePost = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const goBack = () => navigate(-2);
+  const post = useSelector(selectSinglePost);
+  localStorage.setItem("post", JSON.stringify(post));
   let localPost = localStorage.getItem("post");
   localPost = JSON.parse(localPost);
   const [title, setTitle] = useState(localPost.title);
@@ -15,6 +19,7 @@ const UpdatePost = () => {
   const update = () => {
     dispatch(updatePost({ title, body, id }));
     localStorage.removeItem("post");
+    goBack();
   };
   const style = updatePostStyle();
   // obnavitic heto vor noric es uzum obnovit anes amena skzbi dzevova berum eli post@ et nranica vor es localum em obnavit anum vochte bazayum
@@ -40,17 +45,15 @@ const UpdatePost = () => {
         type="text"
         onChange={(e) => setBody(e.target.value)}
       />
-      <NavLink to="/posts">
-        <Button
-          fullWidth
-          variant="contained"
-          className={style.btn}
-          onClick={update}
-          disabled={(title.length && body.length) == "" && true}
-        >
-          Update
-        </Button>
-      </NavLink>
+      <Button
+        fullWidth
+        variant="contained"
+        className={style.btn}
+        onClick={update}
+        disabled={(title.length && body.length) == "" && true}
+      >
+        Update
+      </Button>
     </form>
   );
 };

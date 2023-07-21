@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     const email = localStorage.getItem("email");
     if (email && window.location.pathname === "/") {
-      navigate("/posts");
+      navigate("/posts/page/1");
     }
   }, []);
 

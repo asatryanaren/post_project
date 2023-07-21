@@ -5,10 +5,6 @@ import AddPost from "../components/Posts/AddPost";
 
 export const PROTECTED_ROUTES = [
   {
-    path: "/posts",
-    component: <Posts />,
-  },
-  {
     path: "/posts/page/:id",
     component: <Posts />,
   },

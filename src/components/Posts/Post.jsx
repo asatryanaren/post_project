@@ -21,7 +21,6 @@ const Post = () => {
   const style = postStyles();
   const userId = localStorage.getItem("userId");
   const singlePost = useSelector(selectSinglePost);
-  localStorage.setItem("post", JSON.stringify(singlePost));
   useEffect(() => {
     if (id) dispatch(postAPI(id));
   }, [id, dispatch]);

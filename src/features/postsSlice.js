@@ -5,11 +5,21 @@ export const postsAPI = createAsyncThunk(
   "posts",
   async (post, { dispatch }) => {
     const response = await axios
-      .get(`https://jsonplaceholder.typicode.com/posts`)
+      .get(`https://jsonplaceholder.typicode.com/posts?userId=${post}`)
       .then((resp) => resp.data);
     dispatch(getPostState(response));
   }
 );
+export const postsLength = createAsyncThunk(
+  "posts",
+  async (post, { dispatch }) => {
+    const response = await axios
+      .get(`https://jsonplaceholder.typicode.com/posts`)
+      .then((resp) => resp.data);
+    dispatch(getBasePostsLength(response.length));
+  }
+);
+
 export const postAPI = createAsyncThunk("posts", async (id, { dispatch }) => {
   const response = await axios
     .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
@@ -26,7 +36,6 @@ export const postAdd = createAsyncThunk(
 export const postDelete = createAsyncThunk(
   "posts/deletePost",
   async (id, { dispatch }) => {
-    console.log("slice id ", id);
     await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
     dispatch(deletePost(id));
   }
@@ -36,6 +45,7 @@ const initialState = {
   postsState: [],
   currentPage: 1,
   singlePost: null,
+  basePostsLength: null,
 };
 const postsSlice = createSlice({
   name: "posts",
@@ -59,20 +69,25 @@ const postsSlice = createSlice({
       state.postsState = state.postsState.filter(
         (p) => p.id !== state.singlePost.id
       );
+      state.basePostsLength = state.basePostsLength + 1;
     },
     addPost: (state, action) => {
-      console.log(action.payload);
       state.postsState = [action.payload, ...state.postsState];
+      state.basePostsLength = state.basePostsLength + 1;
     },
     updateCurrentPage: (state, action) => {
-      console.log(action.payload);
       state.currentPage = action.payload;
+    },
+    getBasePostsLength: (state, action) => {
+      state.basePostsLength = action.payload;
     },
   },
 });
 export const selectPostsState = (state) => state.postsSlice.postsState;
 export const selectCurrentPage = (state) => state.postsSlice.currentPage;
 export const selectSinglePost = (state) => state.postsSlice.singlePost;
+export const selectBasePostsLength = (state) =>
+  state.postsSlice.basePostsLength;
 export const {
   getPostState,
   updatePost,
@@ -80,6 +95,7 @@ export const {
   addPost,
   updateCurrentPage,
   getSinglePostState,
+  getBasePostsLength,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;

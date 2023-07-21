@@ -11,14 +11,20 @@ const Pagination = ({ postsPerPage, totalPosts }) => {
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
+
   return (
     <Container className={style.container}>
-      {pageNumbers.map((number, i) => (
+      {pageNumbers.map((number) => (
         <NavLink
-          to={`/posts/page/${i + 1}`}
+          to={`/posts/page/${number}`}
           key={number}
-          className={style.link}
-          onClick={() => dispatch(updateCurrentPage(number))}
+          className={({ isActive }) =>
+            isActive ? style.active_link : style.link
+          }
+          onClick={() => {
+            dispatch(updateCurrentPage(number));
+            localStorage.setItem("currentPage", JSON.stringify(number));
+          }}
         >
           {number}
         </NavLink>
