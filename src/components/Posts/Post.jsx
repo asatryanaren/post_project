@@ -24,7 +24,7 @@ const Post = () => {
   useEffect(() => {
     if (id) dispatch(postAPI(id));
   }, [id, dispatch]);
-
+  localStorage.setItem("post", JSON.stringify(singlePost));
   return (
     <Paper className={style.paper}>
       {singlePost && (

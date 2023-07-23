@@ -5,6 +5,7 @@ import { selectIsLoggedIn } from "./features/usersSlice";
 import { PROTECTED_ROUTES } from "./Routes/protected";
 import { PUBLIC_ROUTES } from "./Routes/public";
 import NotFound from "./components/NotFound/NotFound";
+import Login from "./components/Login/Login";
 
 function App() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function App() {
   }, []);
 
   const routes = isLoggedIn ? PROTECTED_ROUTES : PUBLIC_ROUTES;
+
   return (
     <div className="App">
       <Routes>
@@ -25,6 +27,7 @@ function App() {
           <Route path={route.path} key={route.path} element={route.component} />
         ))}
         <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<Login />} />
       </Routes>
     </div>
   );

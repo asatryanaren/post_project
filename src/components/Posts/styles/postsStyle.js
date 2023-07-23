@@ -5,12 +5,13 @@ export const postsStyle = makeStyles({
   flexContainer: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: "30px",
   },
   btn: {
     backgroundColor: "blue",
     color: "white",
     display: "block",
-    margin: "20px auto",
+    margin: "0px 5px",
     "&:disabled": {
       backgroundColor: "blue",
       color: "white",
@@ -21,4 +22,5 @@ export const postsStyle = makeStyles({
     },
   },
   link: { textDecoration: "none" },
+  btn_container: { display: "flex" },
 });

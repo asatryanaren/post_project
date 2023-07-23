@@ -11,7 +11,6 @@ const UpdatePost = () => {
   const navigate = useNavigate();
   const goBack = () => navigate(-2);
   const post = useSelector(selectSinglePost);
-  localStorage.setItem("post", JSON.stringify(post));
   let localPost = localStorage.getItem("post");
   localPost = JSON.parse(localPost);
   const [title, setTitle] = useState(localPost.title);

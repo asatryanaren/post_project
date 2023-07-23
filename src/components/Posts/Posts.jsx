@@ -22,6 +22,7 @@ const Posts = () => {
   localCurrentPage = JSON.parse(localCurrentPage);
   let [searchParams] = useSearchParams();
   const page = searchParams.get("page");
+  const logOut = () => localStorage.clear();
 
   useEffect(() => {
     dispatch(postsAPI(localCurrentPage));
@@ -34,11 +35,18 @@ const Posts = () => {
         <Typography variant="h4">
           There are {Length} post in the database
         </Typography>
-        <NavLink to="/addpost" className={styles.link}>
-          <Button variant="contained" className={styles.btn}>
-            Add post
-          </Button>
-        </NavLink>
+        <Grid className={styles.btn_container}>
+          <NavLink to="/addpost" className={styles.link}>
+            <Button variant="contained" className={styles.btn}>
+              Add post
+            </Button>
+          </NavLink>
+          <NavLink to="/" className={styles.link}>
+            <Button onClick={logOut} variant="contained" className={styles.btn}>
+              Log Out
+            </Button>
+          </NavLink>
+        </Grid>
       </Grid>
       <Typography variant="h6">Posts title</Typography>
       <hr />
@@ -56,11 +64,7 @@ const Posts = () => {
           </Grid>
         );
       })}
-      <Pagination
-        postsPerPage={postsPerPage}
-        totalPosts={Length}
-        currentPosts
-      />
+      <Pagination postsPerPage={postsPerPage} totalPosts={Length} />
     </Container>
   );
 };
