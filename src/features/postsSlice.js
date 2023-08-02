@@ -1,12 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {
+  createPost,
+  deletePost as deletePostApi,
+  getPostById,
+  getPostsByUserId,
+} from "../services/posts.service";
 
 export const postsAPI = createAsyncThunk(
   "posts",
-  async (post, { dispatch }) => {
-    const response = await axios
-      .get(`https://jsonplaceholder.typicode.com/posts?userId=${post}`)
-      .then((resp) => resp.data);
+  async (userId, { dispatch }) => {
+    const response = await getPostsByUserId(userId);
     dispatch(getPostState(response));
   }
 );
@@ -21,22 +25,20 @@ export const postsLength = createAsyncThunk(
 );
 
 export const postAPI = createAsyncThunk("posts", async (id, { dispatch }) => {
-  const response = await axios
-    .get(`https://jsonplaceholder.typicode.com/posts/${id}`)
-    .then((resp) => resp.data);
+  const response = await getPostById(id);
   dispatch(getSinglePostState(response));
 });
 export const postAdd = createAsyncThunk(
   "post/add",
   async (post, { dispatch }) => {
-    await axios.post(`https://jsonplaceholder.typicode.com/posts`, { post });
+    await createPost(post);
     dispatch(addPost(post));
   }
 );
 export const postDelete = createAsyncThunk(
   "posts/deletePost",
   async (id, { dispatch }) => {
-    await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
+    await deletePostApi(id);
     dispatch(deletePost(id));
   }
 );
