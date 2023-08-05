@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
-  postAPI,
   selectSinglePost,
   deletePost,
   selectCurrentPage,
@@ -9,6 +8,8 @@ import { NavLink, useParams } from "react-router-dom";
 import { Button, Container, Paper, Typography } from "@material-ui/core";
 import { postStyles } from "./styles/postStyle";
 import { useEffect } from "react";
+import AddComments from "./addComments";
+import { postAPI } from "../../app/service/posts.service";
 
 const Post = () => {
   const dispatch = useDispatch();
@@ -26,34 +27,37 @@ const Post = () => {
   }, [id, dispatch]);
   localStorage.setItem("post", JSON.stringify(singlePost));
   return (
-    <Paper className={style.paper}>
-      {singlePost && (
-        <Container>
-          <Typography variant="h4">{singlePost.title}</Typography>
-          <Typography variant="body1" className={style.postBody}>
-            {singlePost.body}
-          </Typography>
-          {(singlePost.userId == userId || singlePost.id < 1) && (
-            <div>
-              <NavLink to={`/post/${id}/updatepost`}>
-                <Button variant="contained" className={style.btn}>
-                  Edit
-                </Button>
-              </NavLink>
-              <NavLink to={`/posts/page/${page} `}>
-                <Button
-                  onClick={() => Delete(singlePost.id)}
-                  variant="contained"
-                  className={style.btn}
-                >
-                  Delete
-                </Button>
-              </NavLink>
-            </div>
-          )}
-        </Container>
-      )}
-    </Paper>
+    <>
+      <Paper className={style.paper}>
+        {singlePost && (
+          <Container>
+            <Typography variant="h4">{singlePost.title}</Typography>
+            <Typography variant="body1" className={style.postBody}>
+              {singlePost.body}
+            </Typography>
+            {(singlePost.userId == userId || singlePost.id < 1) && (
+              <div>
+                <NavLink to={`/post/${id}/updatepost`}>
+                  <Button variant="contained" className={style.btn}>
+                    Edit
+                  </Button>
+                </NavLink>
+                <NavLink to={`/posts/page/${page} `}>
+                  <Button
+                    onClick={() => Delete(singlePost.id)}
+                    variant="contained"
+                    className={style.btn}
+                  >
+                    Delete
+                  </Button>
+                </NavLink>
+              </div>
+            )}
+          </Container>
+        )}
+      </Paper>
+      <AddComments />
+    </>
   );
 };
 export default Post;

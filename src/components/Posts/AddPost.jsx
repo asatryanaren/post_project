@@ -1,9 +1,9 @@
 import { useDispatch } from "react-redux";
-import { postAdd } from "../../features/postsSlice";
 import { useState } from "react";
 import { Button, Paper, TextField } from "@material-ui/core";
 import { addPostStyle } from "./styles/addPostStyle";
 import { NavLink } from "react-router-dom";
+import { postAdd } from "../../app/service/posts.service";
 
 const AddPost = () => {
   const dispatch = useDispatch();

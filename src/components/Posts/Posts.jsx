@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSinglePostState,
-  postsAPI,
-  postsLength,
+  // postsLength,
   selectBasePostsLength,
   selectPostsState,
 } from "../../features/postsSlice";
@@ -11,6 +10,7 @@ import { Container, Grid, Typography, Button } from "@material-ui/core";
 import { postsStyle } from "./styles/postsStyle";
 import Pagination from "../Pagination/Pagination";
 import { useEffect } from "react";
+import { postsAPI } from "../../app/service/posts.service";
 
 const Posts = () => {
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ const Posts = () => {
 
   useEffect(() => {
     dispatch(postsAPI(localCurrentPage));
-    dispatch(postsLength());
   }, [dispatch, localCurrentPage]);
 
   return (

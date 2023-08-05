@@ -14,6 +14,7 @@ export const usersAPI = createAsyncThunk(
     if (loggedInUser) {
       localStorage.setItem("email", email);
       localStorage.setItem("userId", loggedInUser.id);
+      localStorage.setItem("name", loggedInUser.name); //////////////////////// avelacrel em sa anun@ stanalu hmar
       dispatch(updateUser(loggedInUser));
       navigate("/posts/page/1");
     } else {
