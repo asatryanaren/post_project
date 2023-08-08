@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectCommentsState } from "../../features/postsSlice";
 import { commentAdd, commentDelete } from "../../app/service/comment.service";
 import { useParams } from "react-router-dom";
-import { timeConverter } from "../Healpers/time";
+import { timeConverter } from "../../app/Healpers/healpers";
 
 const AddComments = () => {
   const { id } = useParams();
@@ -11,14 +11,7 @@ const AddComments = () => {
   const comment = useSelector(selectCommentsState);
   const [commentBody, setCommentBody] = useState("");
   const name = localStorage.getItem("name");
-
-  const timeConverter = () => {
-    let a = new Date();
-    let hour = a.getHours();
-    let min = a.getMinutes();
-    let time = ` ${hour} : ${min}  `;
-    return time;
-  };
+  const [comments, setComments] = useState();
   const addComment = () => {
     dispatch(
       commentAdd({
@@ -31,10 +24,11 @@ const AddComments = () => {
     );
     setCommentBody("");
   };
-  let comments = localStorage.getItem("comments");
-  comments = JSON.parse(comments);
-  useEffect(() => {}, [comment]);
-
+  useEffect(() => {
+    let com = localStorage.getItem("comments");
+    com = JSON.parse(com);
+    setComments(com);
+  }, [comment]);
   const Delete = (id) => dispatch(commentDelete(id));
   return (
     <form onSubmit={(e) => e.preventDefault()}>

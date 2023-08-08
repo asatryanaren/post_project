@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSinglePostState,
-  // postsLength,
   selectBasePostsLength,
+  selectCurrentPage,
   selectPostsState,
 } from "../../features/postsSlice";
 import { NavLink, useSearchParams } from "react-router-dom";
@@ -18,15 +18,15 @@ const Posts = () => {
   const Length = useSelector(selectBasePostsLength);
   const styles = postsStyle();
   const postsPerPage = 10;
-  let localCurrentPage = localStorage.getItem("currentPage");
-  localCurrentPage = JSON.parse(localCurrentPage);
-  let [searchParams] = useSearchParams();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = useSelector(selectCurrentPage);
   const page = searchParams.get("page");
   const logOut = () => localStorage.clear();
 
   useEffect(() => {
-    dispatch(postsAPI(localCurrentPage));
-  }, [dispatch, localCurrentPage]);
+    dispatch(postsAPI(page));
+    setSearchParams({ page: page ?? currentPage });
+  }, [dispatch, page]);
 
   return (
     <Container>
@@ -63,7 +63,11 @@ const Posts = () => {
           </Grid>
         );
       })}
-      <Pagination postsPerPage={postsPerPage} totalPosts={Length} />
+      <Pagination
+        postsPerPage={postsPerPage}
+        totalPosts={Length}
+        searchParams={searchParams}
+      />
     </Container>
   );
 };

@@ -15,9 +15,7 @@ const postsAPI = createAsyncThunk("posts", async (post, { dispatch }) => {
     .get(`${BASE_URL}/posts?userId=${post}`)
     .then((resp) => resp.data);
   dispatch(getPostState(response));
-  const resp = await axios
-    .get(`https://jsonplaceholder.typicode.com/posts`)
-    .then((resp) => resp.data);
+  const resp = await axios.get(`${BASE_URL}/posts`).then((resp) => resp.data);
   dispatch(getBasePostsLength(resp.length));
 });
 

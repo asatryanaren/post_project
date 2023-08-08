@@ -4,27 +4,23 @@ import { updateCurrentPage } from "../../features/postsSlice";
 import { paginationStyle } from "./paginationStyle";
 import { Container } from "@material-ui/core";
 
-const Pagination = ({ postsPerPage, totalPosts }) => {
+const Pagination = ({ postsPerPage, totalPosts, searchParams }) => {
   const dispatch = useDispatch();
   const style = paginationStyle();
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
-
+  const page = searchParams.get("page");
+  console.log("pagin", page);
   return (
     <Container className={style.container}>
-      {pageNumbers.map((number) => (
+      {pageNumbers.map((number, i) => (
         <NavLink
-          to={`/posts/page/${number}`}
+          to={`/posts`}
           key={number}
-          className={({ isActive }) =>
-            isActive ? style.active_link : style.link
-          }
-          onClick={() => {
-            dispatch(updateCurrentPage(number));
-            localStorage.setItem("currentPage", JSON.stringify(number));
-          }}
+          className={number === +page ? style.active_link : style.link}
+          onClick={() => dispatch(updateCurrentPage(number))}
         >
           {number}
         </NavLink>

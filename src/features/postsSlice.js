@@ -1,6 +1,3 @@
-// // <<<<<<< HEAD
-// import { createSlice } from "@reduxjs/toolkit";
-// // =======
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {
@@ -45,7 +42,6 @@ export const postDelete = createAsyncThunk(
     dispatch(deletePost(id));
   }
 );
-// >>>>>>> 6c5186bd844de6a01f9d972057f032b6f9d9a9e6
 
 const initialState = {
   postsState: [],
@@ -97,11 +93,9 @@ const postsSlice = createSlice({
       state.comments = [...state.comments, comment];
     },
     deleteComment: (state, action) => {
-      let comments = localStorage.getItem("comments");
-      comments = JSON.parse(comments).filter(
+      const comments = state.comments.filter(
         (comment) => comment.id !== action.payload
       );
-      console.log(comments);
       localStorage.setItem("comments", JSON.stringify(comments));
       state.comments = comments;
     },
