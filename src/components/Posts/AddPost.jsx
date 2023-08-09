@@ -44,7 +44,7 @@ const AddPost = () => {
               label="Write Post"
               className={style.textField}
             />
-            <NavLink to="/posts/page/1" className={style.link}>
+            <NavLink to="/posts" className={style.link}>
               <Button
                 onClick={postAd}
                 className={style.btn}

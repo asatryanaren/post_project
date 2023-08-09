@@ -42,7 +42,7 @@ const Post = () => {
                     Edit
                   </Button>
                 </NavLink>
-                <NavLink to={`/posts/page/${page} `}>
+                <NavLink to={`/posts`}>
                   <Button
                     onClick={() => Delete(singlePost.id)}
                     variant="contained"

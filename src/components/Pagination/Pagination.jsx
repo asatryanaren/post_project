@@ -4,15 +4,14 @@ import { updateCurrentPage } from "../../features/postsSlice";
 import { paginationStyle } from "./paginationStyle";
 import { Container } from "@material-ui/core";
 
-const Pagination = ({ postsPerPage, totalPosts, searchParams }) => {
+const Pagination = ({ postsPerPage, totalPosts, searchParams, page }) => {
   const dispatch = useDispatch();
   const style = paginationStyle();
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
-  const page = searchParams.get("page");
-  console.log("pagin", page);
+
   return (
     <Container className={style.container}>
       {pageNumbers.map((number, i) => (

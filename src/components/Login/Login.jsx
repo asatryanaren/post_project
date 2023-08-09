@@ -16,7 +16,6 @@ const Login = () => {
     e.preventDefault();
     dispatch(usersAPI({ email, password, navigate }));
   };
-  localStorage.setItem("currentPage", JSON.stringify(1));
   return (
     <Grid>
       <Paper elevation={10} className={styles.paper}>

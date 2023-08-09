@@ -20,14 +20,17 @@ const Posts = () => {
   const postsPerPage = 10;
   let [searchParams, setSearchParams] = useSearchParams();
   const currentPage = useSelector(selectCurrentPage);
-  const page = searchParams.get("page");
-  const logOut = () => localStorage.clear();
+  let page = searchParams.get("page") ?? currentPage;
+  const logOut = () => {
+    localStorage.clear();
+    page = 1;
+  };
 
   useEffect(() => {
     dispatch(postsAPI(page));
     setSearchParams({ page: page ?? currentPage });
   }, [dispatch, page]);
-
+  console.log(page);
   return (
     <Container>
       <Grid container className={styles.flexContainer}>
@@ -67,6 +70,7 @@ const Posts = () => {
         postsPerPage={postsPerPage}
         totalPosts={Length}
         searchParams={searchParams}
+        page={page}
       />
     </Container>
   );

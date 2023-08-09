@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectIsLoggedIn } from "./features/usersSlice";
@@ -10,11 +10,12 @@ import Login from "./components/Login/Login";
 function App() {
   const navigate = useNavigate();
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
+  let [searchParams, setSearchParams] = useSearchParams();
+  const page = 1 ?? searchParams.get("page");
   useEffect(() => {
     const email = localStorage.getItem("email");
     if (email && window.location.pathname === "/") {
-      navigate("/posts/page/1");
+      navigate(`/posts`);
     }
   }, []);
 
