@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   addPost,
   deletePost,
+  filterPosts,
   getBasePostsLength,
   getPostState,
   getSinglePostState,
@@ -26,6 +27,17 @@ const postAPI = createAsyncThunk("posts", async (id, { dispatch }) => {
   dispatch(getSinglePostState(response));
 });
 
+const postsSearchAPI = createAsyncThunk(
+  "posts",
+  async (title, { dispatch }) => {
+    const response = await axios
+      .get(`${BASE_URL}/posts`)
+      .then((resp) => resp.data);
+    dispatch(getPostState(response));
+    dispatch(filterPosts(title));
+  }
+);
+
 const postAdd = createAsyncThunk("post/add", async (post, { dispatch }) => {
   await axios.post(`${BASE_URL}/posts`, { post });
   dispatch(addPost(post));
@@ -39,4 +51,4 @@ const postDelete = createAsyncThunk(
   }
 );
 
-export { postsAPI, postAPI, postAdd, postDelete };
+export { postsAPI, postAPI, postAdd, postDelete, postsSearchAPI };

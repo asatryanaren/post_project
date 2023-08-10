@@ -56,6 +56,12 @@ const postsSlice = createSlice({
       localStorage.setItem("comments", JSON.stringify(comments));
       state.comments = comments;
     },
+    filterPosts: (state, action) => {
+      const { title } = action.payload;
+      state.postsState = state.postsState.filter(
+        (post) => post.title === title
+      );
+    },
   },
 });
 export const selectPostsState = (state) => state.postsSlice.postsState;
@@ -74,6 +80,7 @@ export const {
   getBasePostsLength,
   deleteComment,
   addComment,
+  filterPosts,
 } = postsSlice.actions;
 
 export default postsSlice.reducer;
