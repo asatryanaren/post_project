@@ -6,7 +6,13 @@ import {
   selectPostsState,
 } from "../../features/postsSlice";
 import { NavLink, useSearchParams } from "react-router-dom";
-import { Container, Grid, Typography, Button } from "@material-ui/core";
+import {
+  Container,
+  Grid,
+  Typography,
+  Button,
+  TextField,
+} from "@material-ui/core";
 import { postsStyle } from "./styles/postsStyle";
 import Pagination from "../Pagination/Pagination";
 import { useEffect, useState } from "react";
@@ -18,49 +24,47 @@ const Posts = () => {
   const Length = useSelector(selectBasePostsLength);
   const styles = postsStyle();
   const postsPerPage = 10;
-  let [searchParams, setSearchParams] = useSearchParams();
   const currentPage = useSelector(selectCurrentPage);
+  let [searchParams, setSearchParams] = useSearchParams();
   let page = searchParams.get("page") ?? currentPage;
-  const postQuery = searchParams.get("post") || "";
+
+  const [queryValue, setQueryValue] = useState("");
+  let [searchQuery, setSearchQuery] = useSearchParams();
+  let postQuery = searchQuery.get("post") ?? queryValue;
+
   const logOut = () => {
     localStorage.clear();
     page = 1;
   };
-
-  const [queryValue, setQueryValue] = useState("");
+  let query = localStorage.getItem("postQuery");
+  query = JSON.parse(query);
   useEffect(() => {
     let searchClick = localStorage.getItem("searchClick") || "";
-    console.log(searchClick);
     if (!searchClick) {
       dispatch(postsAPI(page));
       setSearchParams({ page: page ?? currentPage });
       localStorage.removeItem("searchClick");
     } else {
-      dispatch(postsSearchAPI(queryValue));
-      setSearchParams({ post: queryValue });
+      dispatch(postsSearchAPI(query));
+      setSearchQuery({ post: query });
     }
   }, [dispatch, page]);
 
   const search = () => {
-    // dispatch(postsSearchAPI());
-    // setSearchParams({ post: queryValue });
     localStorage.setItem("searchClick", JSON.stringify(true));
+    localStorage.setItem("postQuery", JSON.stringify(queryValue));
   };
-
+  const allPosts = () => {
+    localStorage.removeItem("searchClick");
+    localStorage.removeItem("postQuery");
+  };
   return (
     <Container>
       <Grid container className={styles.flexContainer}>
         <Typography variant="h4">
           There are {Length} post in the database
         </Typography>
-        <form>
-          <input
-            type="search"
-            value={queryValue}
-            onChange={(e) => setQueryValue(e.target.value)}
-          />
-          <input type="submit" onClick={search} />
-        </form>
+
         <Grid className={styles.btn_container}>
           <NavLink to="/addpost" className={styles.link}>
             <Button variant="contained" className={styles.btn}>
@@ -75,29 +79,42 @@ const Posts = () => {
         </Grid>
       </Grid>
       <Typography variant="h6">Posts title</Typography>
+      <form autoComplete="off" className={styles.form}>
+        <TextField
+          type="search"
+          label="Search post"
+          value={queryValue}
+          onChange={(e) => setQueryValue(e.target.value)}
+          className={styles.search}
+        />
+        <Button
+          type="submit"
+          onClick={search}
+          className={styles.search_btn}
+          disabled={queryValue.length === 0 && true}
+        >
+          Search
+        </Button>
+        <Button type="submit" onClick={allPosts} className={styles.search_btn}>
+          All posts
+        </Button>
+      </form>
       <hr />
-      {posts
-        .filter((p) => p.title.includes(postQuery))
-        .map((post) => {
-          return (
-            <Grid key={post.id}>
-              <NavLink to={`/post/${post.id}`} className={styles.postsTitle}>
-                <Typography
-                  variant="h6"
-                  onClick={() => dispatch(getSinglePostState(post))}
-                >
-                  {post.title}
-                </Typography>
-              </NavLink>
-            </Grid>
-          );
-        })}
-      <Pagination
-        postsPerPage={postsPerPage}
-        totalPosts={Length}
-        searchParams={searchParams}
-        page={page}
-      />
+      {posts.map((post) => {
+        return (
+          <Grid key={post.id}>
+            <NavLink to={`/post/${post.id}`} className={styles.postsTitle}>
+              <Typography
+                variant="h6"
+                onClick={() => dispatch(getSinglePostState(post))}
+              >
+                {post.title}
+              </Typography>
+            </NavLink>
+          </Grid>
+        );
+      })}
+      <Pagination postsPerPage={postsPerPage} totalPosts={Length} page={page} />
     </Container>
   );
 };

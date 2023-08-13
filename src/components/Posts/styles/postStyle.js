@@ -6,10 +6,6 @@ export const postStyles = makeStyles({
     color: "white",
     display: "inline-block",
     marginRight: "10px",
-    "&:disabled": {
-      backgroundColor: "blue",
-      color: "white",
-    },
     "&:hover": {
       backgroundColor: "#3A43F6",
       color: "white",

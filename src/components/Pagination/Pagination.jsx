@@ -4,7 +4,10 @@ import { updateCurrentPage } from "../../features/postsSlice";
 import { paginationStyle } from "./paginationStyle";
 import { Container } from "@material-ui/core";
 
-const Pagination = ({ postsPerPage, totalPosts, searchParams, page }) => {
+const Pagination = ({ postsPerPage, totalPosts, page }) => {
+  console.log("page", page);
+  console.log("postsPerPage", postsPerPage);
+  console.log("Length", totalPosts);
   const dispatch = useDispatch();
   const style = paginationStyle();
   const pageNumbers = [];

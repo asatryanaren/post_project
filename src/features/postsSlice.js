@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState = {
   postsState: [],
@@ -57,10 +57,12 @@ const postsSlice = createSlice({
       state.comments = comments;
     },
     filterPosts: (state, action) => {
-      const { title } = action.payload;
-      state.postsState = state.postsState.filter(
-        (post) => post.title === title
+      const s = state.postsState.filter((post) =>
+        post.title.includes(action.payload)
       );
+      state.postsState = s;
+
+      state.basePostsLength = state.postsState.length;
     },
   },
 });
